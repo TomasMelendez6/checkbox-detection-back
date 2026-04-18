@@ -29,7 +29,7 @@ func NewPythonDetector(python, script string, timeout time.Duration) *PythonDete
 }
 
 // Detect implements [Detector].
-func (d *PythonDetector) Detect(ctx context.Context, imagePath string) ([]model.Box, error) {
+func (d *PythonDetector) Detect(ctx context.Context, imagePath string) (model.DetectResponse, error) {
 	if d.timeout > 0 {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, d.timeout)
@@ -42,14 +42,17 @@ func (d *PythonDetector) Detect(ctx context.Context, imagePath string) ([]model.
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("detector process: %w (stderr: %s)", err, truncate(stderr.String(), 2048))
+		return model.DetectResponse{}, fmt.Errorf("detector process: %w (stderr: %s)", err, truncate(stderr.String(), 2048))
 	}
 
 	var resp model.DetectResponse
 	if err := json.Unmarshal(stdout.Bytes(), &resp); err != nil {
-		return nil, fmt.Errorf("detector json: %w", err)
+		return model.DetectResponse{}, fmt.Errorf("detector json: %w", err)
 	}
-	return resp.Boxes, nil
+	if resp.DetectorVersion == "" {
+		resp.DetectorVersion = "unknown"
+	}
+	return resp, nil
 }
 
 func truncate(s string, max int) string {

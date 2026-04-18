@@ -8,5 +8,5 @@ import (
 
 // Detector runs checkbox detection on an image file path.
 type Detector interface {
-	Detect(ctx context.Context, imagePath string) ([]model.Box, error)
+	Detect(ctx context.Context, imagePath string) (model.DetectResponse, error)
 }

@@ -8,5 +8,8 @@ type Box struct {
 
 // DetectResponse is the JSON body for POST /detect.
 type DetectResponse struct {
-	Boxes []Box `json:"boxes"`
+	DetectorVersion string `json:"detector_version,omitempty"`
+	ImageWidth      int    `json:"image_width,omitempty"`
+	ImageHeight     int    `json:"image_height,omitempty"`
+	Boxes             []Box  `json:"boxes"`
 }

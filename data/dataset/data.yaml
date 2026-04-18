@@ -1,0 +1,6 @@
+# Run training from repo root (path is relative to CWD).
+path: data/dataset
+train: images/train
+val: images/val
+names:
+  0: checkbox

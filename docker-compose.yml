@@ -1,0 +1,10 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      DETECTOR_TIMEOUT: "60s"
+      DETECTOR_PYTHON: "python3"
+      DETECTOR_SCRIPT: "/app/scripts/detect_checkboxes.py"

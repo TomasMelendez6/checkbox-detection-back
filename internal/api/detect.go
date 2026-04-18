@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/TomasMelendez6/checkbox-detection-back/internal/detector"
-	"github.com/TomasMelendez6/checkbox-detection-back/internal/model"
 )
 
 const multipartFieldFile = "file"
@@ -47,14 +46,14 @@ func NewDetectHandler(det detector.Detector, maxBytes int64) http.HandlerFunc {
 			return
 		}
 
-		boxes, err := det.Detect(r.Context(), tmpPath)
+		out, err := det.Detect(r.Context(), tmpPath)
 		if err != nil {
 			writeError(w, http.StatusBadGateway, "detection failed")
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(model.DetectResponse{Boxes: boxes})
+		_ = json.NewEncoder(w).Encode(out)
 	}
 }
 

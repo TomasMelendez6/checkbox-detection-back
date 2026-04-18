@@ -40,10 +40,13 @@ No local Go or Python install is required if you use Docker.
      -F "file=@/path/to/your/image.png"
    ```
 
-Response shape:
+Response shape (fields may include `detector_version`, `image_width`, `image_height`):
 
 ```json
 {
+  "detector_version": "median-local-ring-v3-elongated-blob",
+  "image_width": 1024,
+  "image_height": 637,
   "boxes": [
     { "bbox": [10, 20, 40, 50], "is_checked": true },
     { "bbox": [10, 60, 40, 90], "is_checked": false }
@@ -51,7 +54,11 @@ Response shape:
 }
 ```
 
-`bbox` is `[x1, y1, x2, y2]` in **pixels** (top-left and bottom-right), same coordinate system as the decoded image (origin top-left, `y` down).
+`bbox` is `[x1, y1, x2, y2]` in **pixels** (top-left, bottom-right exclusive), origin top-left, `y` down.
+
+### Optional: YOLO detector
+
+Train with `pip install -r requirements-ml.txt` and `python scripts/train_checkbox_yolo.py`. Infer with `scripts/detect_checkboxes_yolo.py` and point `DETECTOR_SCRIPT` at that file when deploying. Dataset layout lives under `data/dataset/` (images/labels are gitignored; keep `data.yaml` + `.gitkeep` in repo).
 
 ## Configuration (environment)
 
@@ -60,7 +67,7 @@ Response shape:
 | `PORT` | `8080` | HTTP listen port |
 | `DETECTOR_TIMEOUT` | `60s` | Max time for the Python detector process |
 | `DETECTOR_PYTHON` | `python3` | Python executable (override to `python` if needed) |
-| `DETECTOR_SCRIPT` | `/app/scripts/detect_checkboxes.py` | Path to detector script (set in Docker image) |
+| `DETECTOR_SCRIPT` | `/app/scripts/detect_checkboxes.py` | Detector script (`detect_checkboxes_yolo.py` after training YOLO) |
 
 ## Local development (without Docker)
 

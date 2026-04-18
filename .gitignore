@@ -11,3 +11,19 @@ venv/
 .idea/
 .vscode/
 *.log
+runs/
+*.pt
+yolov8n.pt
+
+# YOLO / Ultralytics caches
+*.cache
+
+# Training data stays local (paths layout remains via .gitkeep)
+data/dataset/images/train/*
+data/dataset/images/val/*
+data/dataset/labels/train/*
+data/dataset/labels/val/*
+!data/dataset/images/train/.gitkeep
+!data/dataset/images/val/.gitkeep
+!data/dataset/labels/train/.gitkeep
+!data/dataset/labels/val/.gitkeep
