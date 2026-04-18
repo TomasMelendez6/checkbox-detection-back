@@ -1,0 +1,13 @@
+/bin/
+/dist/
+*.exe
+.env
+__pycache__/
+*.py[cod]
+.Python
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+*.log
