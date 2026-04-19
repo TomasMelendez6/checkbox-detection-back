@@ -67,6 +67,19 @@ Train with `pip install -r requirements-ml.txt` and `python scripts/train_checkb
 | `DETECTOR_SCRIPT` | `/app/scripts/detect_checkboxes_yolo.py` (Docker) / `scripts/detect_checkboxes.py` (local default) | Detector Python entrypoint |
 | `DETECTOR_WEIGHTS` | *(YOLO only)* path to `best.pt` | Overrides default `runs/detect/checkbox/weights/best.pt` |
 | `DETECTOR_CONF` | *(YOLO only)* e.g. `0.45` | Min confidence; read by `detect_checkboxes_yolo.py` when Go passes only `--image` |
+| `WEIGHTS_DOWNLOAD_URL` | *(Docker / cloud only)* unset | Public HTTPS URL of `best.pt`. At container start, if the file at `DETECTOR_WEIGHTS` is missing or empty, it is downloaded once. `*.pt` is gitignored, so Render/GitHub builds do not include weights in the image. |
+
+### Render (or any registry build from GitHub)
+
+`best.pt` is not in the clone (see `.gitignore`), so the Docker image is built **without** baked-in weights.
+
+1. Upload `best.pt` to a **public** URL (e.g. a [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) asset, or another HTTPS host).
+2. In the Render service, set **runtime** environment:
+   - `WEIGHTS_DOWNLOAD_URL` = that URL (required on first boot if no volume).
+   - `DETECTOR_WEIGHTS` = `/app/runs/detect/checkbox/weights/best.pt` (default path; fix typos: **`DETECTOR_WEIGHTS`**, not `DETECTOR_WHIGHTS`).
+3. Redeploy so the entrypoint can download the file before `server` starts.
+
+Local `docker compose` bind-mounts `./runs/detect/checkbox/weights/best.pt` so you do not need `WEIGHTS_DOWNLOAD_URL` when that file exists on your machine.
 
 ## Local development (without Docker)
 

@@ -24,6 +24,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libgomp1 \
         libglib2.0-0 \
+        curl \
+        ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
@@ -42,11 +44,15 @@ COPY scripts/detect_checkboxes.py /app/scripts/detect_checkboxes.py
 
 COPY scripts/detect_checkboxes_yolo.py /app/scripts/detect_checkboxes_yolo.py
 
-# Trained weights (run training locally before docker build, or mount at runtime and set DETECTOR_WEIGHTS).
+COPY scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+# Strip Windows CRLF so shebang is valid inside Linux (avoids "no such file or directory").
+RUN sed -i 's/\r$//' /app/scripts/docker-entrypoint.sh && chmod +x /app/scripts/docker-entrypoint.sh
 
-COPY runs/detect/checkbox/weights/best.pt /app/runs/detect/checkbox/weights/best.pt
+# Weights: not in git (.gitignore). Local: bind-mount (docker-compose) or set WEIGHTS_DOWNLOAD_URL at runtime (Render).
 
 COPY --from=gobuild /out/server /usr/local/bin/server
+
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
 
 ENV PORT=8080
 
@@ -57,6 +63,3 @@ ENV DETECTOR_SCRIPT=/app/scripts/detect_checkboxes_yolo.py
 ENV DETECTOR_CONF=0.45
 
 EXPOSE 8080
-
-CMD ["server"]
-

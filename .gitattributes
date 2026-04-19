@@ -1,0 +1,2 @@
+# Shell in Linux containers must use LF only or shebang breaks ("no such file or directory").
+*.sh text eol=lf

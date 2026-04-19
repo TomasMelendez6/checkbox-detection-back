@@ -3,6 +3,9 @@ services:
     build: .
     ports:
       - "8080:8080"
+    volumes:
+      # Local best.pt is gitignored; mount from your machine after training.
+      - ./runs/detect/checkbox/weights/best.pt:/app/runs/detect/checkbox/weights/best.pt:ro
     environment:
       PORT: "8080"
       # YOLO cold-starts a new Python+torch process per request; allow headroom on CPU.
