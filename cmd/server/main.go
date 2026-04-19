@@ -11,6 +11,7 @@ import (
 
 	"github.com/TomasMelendez6/checkbox-detection-back/internal/api"
 	"github.com/TomasMelendez6/checkbox-detection-back/internal/detector"
+	"github.com/TomasMelendez6/checkbox-detection-back/internal/middleware"
 )
 
 const defaultMaxUpload = 32 << 20
@@ -31,7 +32,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              ":" + port,
-		Handler:           mux,
+		Handler:           middleware.CORS(mux),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

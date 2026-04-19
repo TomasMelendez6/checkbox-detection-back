@@ -14,3 +14,5 @@ services:
       DETECTOR_SCRIPT: "/app/scripts/detect_checkboxes_yolo.py"
       DETECTOR_CONF: "0.35"
       DETECTOR_WEIGHTS: "/app/runs/detect/checkbox/weights/best.pt"
+      # Browser dashboard on another origin (e.g. Render static); * is fine for local demos.
+      CORS_ALLOW_ORIGINS: "*"

@@ -1,8 +1,74 @@
 .app {
-  padding: 2rem 1.5rem 3rem;
+  padding: calc(2.75rem + 2rem) 1.5rem 3rem;
   max-width: 960px;
   margin: 0 auto;
   text-align: center;
+}
+
+.api-status {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.api-status--checking {
+  background: var(--code-bg);
+  color: var(--text-h);
+}
+
+.api-status--ok {
+  background: rgba(22, 163, 74, 0.14);
+  color: #15803d;
+}
+
+.api-status--down {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+}
+
+.api-status--misconfigured {
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(217, 119, 6, 0.14);
+  color: #b45309;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.api-status--misconfigured code {
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .api-status--ok {
+    background: rgba(34, 197, 94, 0.12);
+    color: #86efac;
+  }
+
+  .api-status--down {
+    background: rgba(220, 38, 38, 0.18);
+    color: #fca5a5;
+  }
+
+  .api-status--misconfigured {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fcd34d;
+  }
 }
 
 .header h1 {

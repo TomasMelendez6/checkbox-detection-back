@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { apiUrl, isRemoteStaticMissingApiBase } from './api'
 import { BBoxCrop } from './BBoxCrop'
 import type { DetectErrorBody, DetectResponse } from './types/detect'
 import './App.css'
+
+type ApiHealth = 'checking' | 'ok' | 'down' | 'misconfigured'
 
 function isImageFile(f: File) {
   return f.type.startsWith('image/')
@@ -17,6 +20,32 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<DetectResponse | null>(null)
+  const [apiHealth, setApiHealth] = useState<ApiHealth>('checking')
+
+  useEffect(() => {
+    let cancelled = false
+    const ping = async () => {
+      if (isRemoteStaticMissingApiBase()) {
+        if (!cancelled) setApiHealth('misconfigured')
+        return
+      }
+      try {
+        const res = await fetch(apiUrl('/healthz'), { method: 'GET', cache: 'no-store' })
+        const body = (await res.text()).trim()
+        if (cancelled) return
+        setApiHealth(res.ok && body === 'ok' ? 'ok' : 'down')
+      } catch {
+        if (!cancelled) setApiHealth('down')
+      }
+    }
+    setApiHealth('checking')
+    void ping()
+    const id = window.setInterval(() => void ping(), 10_000)
+    return () => {
+      cancelled = true
+      window.clearInterval(id)
+    }
+  }, [])
 
   const previewUrl = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
@@ -63,7 +92,7 @@ export default function App() {
     try {
       const body = new FormData()
       body.append('file', file)
-      const res = await fetch('/detect', { method: 'POST', body })
+      const res = await fetch(apiUrl('/detect'), { method: 'POST', body })
       const text = await res.text()
       let data: unknown
       try {
@@ -84,7 +113,9 @@ export default function App() {
       }
       setResult(parsed)
     } catch {
-      setError('Network error — is the API running on port 8080?')
+      setError(
+        'Network error — start the API (local :8080) or set VITE_API_BASE_URL for a remote host.',
+      )
     } finally {
       setLoading(false)
     }
@@ -92,6 +123,28 @@ export default function App() {
 
   return (
     <div className="app">
+      <div
+        className={`api-status api-status--${apiHealth}`}
+        role="status"
+        aria-live="polite"
+        title="Polls GET /healthz every 10s. On Render free tier the API sleeps after inactivity; the first successful check may take up to a minute."
+      >
+        {apiHealth === 'checking' && (
+          <>
+            <Spinner size="sm" />
+            <span>Checking API…</span>
+          </>
+        )}
+        {apiHealth === 'ok' && <span>API OK</span>}
+        {apiHealth === 'down' && <span>API not OK</span>}
+        {apiHealth === 'misconfigured' && (
+          <span>
+            Set <code>VITE_API_BASE_URL</code> at build or <code>window.__API_BASE__</code> in index.html — relative
+            URLs hit this host, not the API
+          </span>
+        )}
+      </div>
+
       <header className="header">
         <h1>Checkbox detection</h1>
         <p className="lede">
@@ -132,7 +185,7 @@ export default function App() {
             <button
               type="button"
               className="btn-primary"
-              disabled={!file || loading}
+              disabled={!file || loading || isRemoteStaticMissingApiBase()}
               aria-busy={loading}
               onClick={runDetection}
             >

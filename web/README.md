@@ -1,10 +1,10 @@
 # Checkbox detection dashboard
 
-Small **React + TypeScript** UI for the take-home API: upload an image, call `POST /detect`, and view per-checkbox crops.
+React + TypeScript UI: upload an image, call `POST /detect`, inspect crops.
 
 ## Prerequisites
 
-- API running on **port 8080** (e.g. `go run ./cmd/server` from the repo root, or `docker compose up`).
+- API on **port 8080** when developing locally (`docker compose up` or `go run` from repo root).
 
 ## Setup
 
@@ -15,22 +15,30 @@ npm install
 
 ## Development
 
-The Vite dev server proxies `/detect` and `/healthz` to `http://127.0.0.1:8080`, so the browser does not need CORS on the Go app.
+1. Start the API from the **repository root**.
+2. In `web/`: `npm run dev` and open the URL shown (usually `http://localhost:5173`).
 
-1. Start the API (from repository root).
-2. In `web/`:
+Vite **proxies** `/detect` and `/healthz` to `http://127.0.0.1:8080` for both **`npm run dev`** and **`npm run preview`**, so you can leave `VITE_API_BASE_URL` unset on `localhost` / `127.0.0.1` and the browser keeps same-origin requests that forward to the API.
+
+## Production / Render Static Site
+
+Set **`VITE_API_BASE_URL`** at **build time** to the HTTPS origin of your Go service (example: `https://your-api.onrender.com`, no trailing slash). The dashboard calls `GET /healthz` and `POST /detect` against that host; the API must send **CORS** headers (see root `README.md`: `CORS_ALLOW_ORIGINS`).
+
+Copy from example:
 
 ```bash
-npm run dev
+cp .env.example .env
+# edit .env, then:
+npm run build
 ```
 
-Open the URL shown in the terminal (usually `http://localhost:5173`).
+On Render, add `VITE_API_BASE_URL` under **Environment** for the static site and trigger a new deploy.
 
-## Production build
+## Production build (local)
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Serving the built static files on the same host as the API would require a reverse proxy or separate deployment; for the take-home, dev + proxy is the intended workflow.
+For `preview` to reach a remote API, set `VITE_API_BASE_URL` in `.env` before `npm run build` (or export it in the shell if your setup injects env at build time).
