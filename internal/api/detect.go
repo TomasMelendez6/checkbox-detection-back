@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -48,6 +49,7 @@ func NewDetectHandler(det detector.Detector, maxBytes int64) http.HandlerFunc {
 
 		out, err := det.Detect(r.Context(), tmpPath)
 		if err != nil {
+			log.Printf("detect: %v", err)
 			writeError(w, http.StatusBadGateway, "detection failed")
 			return
 		}

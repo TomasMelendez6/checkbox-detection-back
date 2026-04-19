@@ -67,7 +67,9 @@ Train with `pip install -r requirements-ml.txt` and `python scripts/train_checkb
 | `PORT` | `8080` | HTTP listen port |
 | `DETECTOR_TIMEOUT` | `60s` | Max time for the Python detector process |
 | `DETECTOR_PYTHON` | `python3` | Python executable (override to `python` if needed) |
-| `DETECTOR_SCRIPT` | `/app/scripts/detect_checkboxes.py` | Detector script (`detect_checkboxes_yolo.py` after training YOLO) |
+| `DETECTOR_SCRIPT` | `/app/scripts/detect_checkboxes_yolo.py` (Docker) / `scripts/detect_checkboxes.py` (local default) | Detector Python entrypoint |
+| `DETECTOR_WEIGHTS` | *(YOLO only)* path to `best.pt` | Overrides default `runs/detect/checkbox/weights/best.pt` |
+| `DETECTOR_CONF` | *(YOLO only)* e.g. `0.45` | Min confidence; read by `detect_checkboxes_yolo.py` when Go passes only `--image` |
 
 ## Local development (without Docker)
 

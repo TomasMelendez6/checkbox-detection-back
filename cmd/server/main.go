@@ -19,7 +19,7 @@ func main() {
 	port := getenv("PORT", "8080")
 	py := getenv("DETECTOR_PYTHON", "python3")
 	script := getenv("DETECTOR_SCRIPT", "scripts/detect_checkboxes.py")
-	timeout := getenvDuration("DETECTOR_TIMEOUT", 60*time.Second)
+	timeout := getenvDuration("DETECTOR_TIMEOUT", 180*time.Second)
 
 	det := detector.NewPythonDetector(py, script, timeout)
 	mux := http.NewServeMux()

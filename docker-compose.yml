@@ -5,6 +5,9 @@ services:
       - "8080:8080"
     environment:
       PORT: "8080"
-      DETECTOR_TIMEOUT: "60s"
+      # YOLO cold-starts a new Python+torch process per request; allow headroom on CPU.
+      DETECTOR_TIMEOUT: "300s"
       DETECTOR_PYTHON: "python3"
-      DETECTOR_SCRIPT: "/app/scripts/detect_checkboxes.py"
+      DETECTOR_SCRIPT: "/app/scripts/detect_checkboxes_yolo.py"
+      DETECTOR_CONF: "0.45"
+      DETECTOR_WEIGHTS: "/app/runs/detect/checkbox/weights/best.pt"

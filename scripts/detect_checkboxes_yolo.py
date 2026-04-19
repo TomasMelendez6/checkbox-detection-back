@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import sys
@@ -14,6 +16,23 @@ import cv2
 import numpy as np
 
 DETECTOR_VERSION = "yolov8-checkbox-v1"
+
+
+def _env_float(key: str, default: float) -> float:
+    v = os.environ.get(key, "").strip()
+    if not v:
+        return default
+    try:
+        return float(v)
+    except ValueError:
+        return default
+
+
+def _default_weights() -> str:
+    w = os.environ.get("DETECTOR_WEIGHTS", "").strip()
+    if w:
+        return w
+    return os.path.join("runs", "detect", "checkbox", "weights", "best.pt")
 
 
 def _load_heuristic_classify():
@@ -30,10 +49,15 @@ def main() -> int:
     p.add_argument("--image", required=True)
     p.add_argument(
         "--weights",
-        default=os.path.join("runs", "detect", "checkbox", "weights", "best.pt"),
-        help="YOLO weights (.pt); default matches train_checkbox_yolo.py --name checkbox",
+        default=_default_weights(),
+        help="YOLO .pt weights; env DETECTOR_WEIGHTS overrides default path",
     )
-    p.add_argument("--conf", type=float, default=0.25, help="min confidence")
+    p.add_argument(
+        "--conf",
+        type=float,
+        default=_env_float("DETECTOR_CONF", 0.25),
+        help="min confidence; env DETECTOR_CONF overrides default",
+    )
     p.add_argument("--iou", type=float, default=0.45, help="NMS iou threshold")
     p.add_argument(
         "--no-classify",
@@ -45,8 +69,12 @@ def main() -> int:
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     os.chdir(root)
 
+    os.environ.setdefault("YOLO_VERBOSE", "False")
+    os.environ.setdefault("ULTRALYTICS_VERBOSE", "False")
+
     try:
-        from ultralytics import YOLO
+        with contextlib.redirect_stdout(io.StringIO()):
+            from ultralytics import YOLO
     except ImportError:
         print("install: pip install -r requirements-ml.txt", file=sys.stderr)
         return 2
@@ -72,13 +100,14 @@ def main() -> int:
 
     classify = _load_heuristic_classify() if not args.no_classify else None
 
-    model = YOLO(weights)
-    res = model.predict(
-        source=bgr,
-        conf=args.conf,
-        iou=args.iou,
-        verbose=False,
-    )
+    with contextlib.redirect_stdout(io.StringIO()):
+        model = YOLO(weights)
+        res = model.predict(
+            source=bgr,
+            conf=args.conf,
+            iou=args.iou,
+            verbose=False,
+        )
     if not res:
         boxes_out: List[dict[str, Any]] = []
     else:
@@ -111,6 +140,7 @@ def main() -> int:
         "boxes": [{"bbox": b["bbox"], "is_checked": b["is_checked"]} for b in boxes_out],
     }
     sys.stdout.write(json.dumps(payload))
+    sys.stdout.flush()
     return 0
 
 
