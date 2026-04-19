@@ -4,9 +4,6 @@ export interface DetectBox {
 }
 
 export interface DetectResponse {
-  detector_version?: string
-  image_width?: number
-  image_height?: number
   boxes: DetectBox[]
 }
 

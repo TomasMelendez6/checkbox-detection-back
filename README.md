@@ -40,13 +40,10 @@ No local Go or Python install is required if you use Docker.
      -F "file=@/path/to/your/image.png"
    ```
 
-Response shape (fields may include `detector_version`, `image_width`, `image_height`):
+Response shape:
 
 ```json
 {
-  "detector_version": "median-local-ring-v3-elongated-blob",
-  "image_width": 1024,
-  "image_height": 637,
   "boxes": [
     { "bbox": [10, 20, 40, 50], "is_checked": true },
     { "bbox": [10, 60, 40, 90], "is_checked": false }

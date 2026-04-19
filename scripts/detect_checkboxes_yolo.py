@@ -15,9 +15,6 @@ from typing import Any, List
 import cv2
 import numpy as np
 
-DETECTOR_VERSION = "yolov8-checkbox-v1"
-
-
 def _env_float(key: str, default: float) -> float:
     v = os.environ.get(key, "").strip()
     if not v:
@@ -134,9 +131,6 @@ def main() -> int:
 
     # API model only has bbox + is_checked; strip confidence for strict match
     payload = {
-        "detector_version": DETECTOR_VERSION,
-        "image_width": orig_w,
-        "image_height": orig_h,
         "boxes": [{"bbox": b["bbox"], "is_checked": b["is_checked"]} for b in boxes_out],
     }
     sys.stdout.write(json.dumps(payload))

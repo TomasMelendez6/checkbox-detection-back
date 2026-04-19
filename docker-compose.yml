@@ -9,5 +9,5 @@ services:
       DETECTOR_TIMEOUT: "300s"
       DETECTOR_PYTHON: "python3"
       DETECTOR_SCRIPT: "/app/scripts/detect_checkboxes_yolo.py"
-      DETECTOR_CONF: "0.45"
+      DETECTOR_CONF: "0.35"
       DETECTOR_WEIGHTS: "/app/runs/detect/checkbox/weights/best.pt"

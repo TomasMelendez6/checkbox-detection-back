@@ -13,9 +13,6 @@ import numpy as np
 
 Box = Tuple[int, int, int, int, bool]  # x1,y1,x2,y2,is_checked
 
-DETECTOR_VERSION = "median-local-ring-v3-elongated-blob"
-
-
 def iou(a: Tuple[int, int, int, int], b: Tuple[int, int, int, int]) -> float:
     ax1, ay1, ax2, ay2 = a
     bx1, by1, bx2, by2 = b
@@ -198,9 +195,6 @@ def main() -> int:
 
     boxes = detect(gray)
     payload = {
-        "detector_version": DETECTOR_VERSION,
-        "image_width": orig_w,
-        "image_height": orig_h,
         "boxes": [
             {
                 "bbox": [

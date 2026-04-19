@@ -7,6 +7,10 @@ function isImageFile(f: File) {
   return f.type.startsWith('image/')
 }
 
+function Spinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  return <span className={`spinner spinner--${size}`} aria-hidden />
+}
+
 export default function App() {
   const inputId = useId()
   const [file, setFile] = useState<File | null>(null)
@@ -120,16 +124,30 @@ export default function App() {
         </p>
       )}
 
-      <div className="actions">
-        <button
-          type="button"
-          className="btn-primary"
-          disabled={!file || loading}
-          onClick={runDetection}
-        >
-          {loading ? 'Running detection…' : 'Run detection'}
-        </button>
-      </div>
+      {previewUrl && (
+        <section className="preview-section">
+          <h2>Original</h2>
+          <img src={previewUrl} alt="Uploaded preview" className="preview-img" />
+          <div className="actions">
+            <button
+              type="button"
+              className="btn-primary"
+              disabled={!file || loading}
+              aria-busy={loading}
+              onClick={runDetection}
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span>Running detection…</span>
+                </>
+              ) : (
+                'Run detection'
+              )}
+            </button>
+          </div>
+        </section>
+      )}
 
       {error && (
         <div className="banner error" role="alert">
@@ -137,28 +155,23 @@ export default function App() {
         </div>
       )}
 
-      {previewUrl && (
-        <section className="preview-section">
-          <h2>Original</h2>
-          <img src={previewUrl} alt="Uploaded preview" className="preview-img" />
+      {loading && previewUrl && (
+        <section
+          className="results results--loading"
+          aria-busy="true"
+          aria-live="polite"
+        >
+          <h2>Regions</h2>
+          <div className="results-loading-panel">
+            <Spinner size="lg" />
+            <p className="results-loading-text">Analyzing image…</p>
+          </div>
         </section>
       )}
 
       {result && previewUrl && (
         <section className="results">
           <div className="meta">
-            {result.detector_version && (
-              <p>
-                <span className="meta-label">Detector</span>{' '}
-                <code>{result.detector_version}</code>
-              </p>
-            )}
-            {(result.image_width != null && result.image_height != null) && (
-              <p>
-                <span className="meta-label">Image size</span>{' '}
-                {result.image_width} × {result.image_height}px
-              </p>
-            )}
             <p>
               <span className="meta-label">Boxes</span> {result.boxes.length}
             </p>

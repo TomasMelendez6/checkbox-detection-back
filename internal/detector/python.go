@@ -49,9 +49,6 @@ func (d *PythonDetector) Detect(ctx context.Context, imagePath string) (model.De
 	if err := json.Unmarshal(stdout.Bytes(), &resp); err != nil {
 		return model.DetectResponse{}, fmt.Errorf("detector json: %w", err)
 	}
-	if resp.DetectorVersion == "" {
-		resp.DetectorVersion = "unknown"
-	}
 	return resp, nil
 }
 
