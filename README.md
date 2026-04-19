@@ -4,11 +4,9 @@ HTTP API that accepts a form image and returns checkbox **bounding boxes** plus 
 
 ## Live demo
 
-**Dashboard (Render Static Site):** [open the app](https://CHECKBOX-DETECTION-WEB.onrender.com)
+**Dashboard (Render Static Site):** <a href="https://CHECKBOX-DETECTION-WEB.onrender.com" target="_blank" rel="noopener noreferrer">open the app</a>
 
-Replace `CHECKBOX-DETECTION-WEB` in this `README.md` with your **Render Static Site** hostname (Render dashboard → your static service → URL).
-
-The stack runs on Render’s **free tier**: the **API web service sleeps** after a period of inactivity. The first load after sleep can take **roughly 30–90 seconds** (cold container, Python/PyTorch import, optional weight download). The dashboard shows a **top status bar** that calls **`GET /healthz` every 10 seconds**: **Checking API…** while waiting, then **API OK** (green) or **API not OK** (red).
+The stack runs on Render’s **free tier**: the **API web service sleeps** after a period of inactivity, so the **first** traffic after idle can take **roughly 30–90 seconds** (cold container, Python/PyTorch import, optional weight download). **Every `POST /detect` is also slow** on this tier: the free instance has **limited CPU/RAM**, and each request **starts a fresh Python subprocess** that loads Ultralytics/torch and the weights again—so detection is not “warm after the first call.” The dashboard shows a **top status bar** that calls **`GET /healthz` every 10 seconds**: **Checking API…** while waiting, then **API OK** (green) or **API not OK** (red).
 
 ## Why Go + Python instead of `gocv`
 
