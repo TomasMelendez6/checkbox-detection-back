@@ -1,0 +1,241 @@
+.app {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dropzone {
+  position: relative;
+  margin: 1.75rem auto 0;
+  padding: 2.5rem 1.5rem;
+  max-width: 32rem;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: var(--code-bg);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.dropzone:hover {
+  border-color: var(--accent-border);
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.dropzone-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.dropzone-title {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 1.05rem;
+}
+
+.dropzone-sub {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.file-name {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.65rem 1.35rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: var(--bg);
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.banner {
+  margin: 1.25rem auto 0;
+  max-width: 36rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.banner.error {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .banner.error {
+    color: #fca5a5;
+    background: rgba(220, 38, 38, 0.15);
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+}
+
+.preview-section {
+  margin-top: 2rem;
+}
+
+.preview-section h2,
+.results h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem;
+}
+
+.preview-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: block;
+  margin: 0 auto;
+}
+
+.results {
+  margin-top: 2rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.meta p {
+  margin: 0;
+}
+
+.meta-label {
+  color: var(--text);
+}
+
+.crop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.crop-card {
+  margin: 0;
+  padding: 0;
+  width: 13rem;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  text-align: center;
+}
+
+.crop-visual {
+  flex: 0 0 auto;
+  height: 11.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  box-sizing: border-box;
+  background: var(--code-bg);
+}
+
+.crop-canvas {
+  display: block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.crop-caption {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 4.25rem;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  font-family: var(--mono);
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.crop-coords {
+  word-break: break-all;
+}
+
+.crop-status {
+  font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--sans);
+  color: var(--text-h);
+}
+
+.crop-status.checked {
+  color: #15803d;
+}
+
+@media (prefers-color-scheme: dark) {
+  .crop-status.checked {
+    color: #86efac;
+  }
+}
