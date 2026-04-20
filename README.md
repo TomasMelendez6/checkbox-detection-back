@@ -33,13 +33,39 @@ No local Go or Python install is required if you use Docker.
    cd checkbox-detection-back
    ```
 
-3. Ensure `runs/detect/checkbox/weights/best.pt` exists locally (train with `scripts/train_checkbox_yolo.py` or copy weights), then:
+3. **Weights for YOLO** — pick **one** path (the default `docker-compose.yml` bind-mounts a local file):
+
+   **A — File on disk (typical)**  
+   - Create the file **`runs/detect/checkbox/weights/best.pt`** on your machine *before* the first `docker compose up` (train with `scripts/train_checkbox_yolo.py`, or copy `best.pt` from a teammate / [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) asset).  
+   - Verify it is a **file**, not a folder:
+
+     ```bash
+     ls -lh runs/detect/checkbox/weights/best.pt
+     ```
+
+   **B — No local file (e.g. fresh clone)**  
+   - In `docker-compose.yml`, **comment out or remove** the entire `volumes:` block under `api` (the two lines that mount `./runs/.../best.pt`).  
+   - Under `api.environment`, set **`WEIGHTS_DOWNLOAD_URL`** to a direct HTTPS URL of `best.pt` (same idea as Render). Example:
+
+     ```yaml
+     WEIGHTS_DOWNLOAD_URL: "https://github.com/<user>/<repo>/releases/download/<tag>/best.pt"
+     ```
+
+   **If you already ran `docker compose up` without a host `best.pt`:** Docker often creates a **directory** named `best.pt` on the host. Remove it, add the real weights file, then `docker compose up` again:
+
+   ```bash
+   rm -rf runs/detect/checkbox/weights/best.pt
+   # copy or download best.pt into runs/detect/checkbox/weights/best.pt
+   docker compose up --build
+   ```
+
+4. Start the stack:
 
    ```bash
    docker compose up --build
    ```
 
-4. Call the API (`file` is the multipart field name):
+5. Call the API (`file` is the multipart field name):
 
    ```bash
    curl -s -X POST http://localhost:8080/detect \
